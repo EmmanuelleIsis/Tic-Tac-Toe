@@ -8,7 +8,7 @@ import './constants.dart';
 void main() {
   runApp(
     MaterialApp(
-      title: 'Tic-Tac-Toe',
+      title: 'Tic-Tac-Toe - 6310409 v1.1',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
   late ThemeData theme;
   late ConfettiController _controllerCenter;
   bool isDarkTheme = false;
+  int round = 1;
 
   @override
   void initState() {
@@ -152,7 +153,7 @@ class _HomePageState extends State<HomePage> {
             ? theme.colorScheme.primary
             : theme.colorScheme.inversePrimary,
         title: Text(
-          'Tic-Tac-Toe',
+          'Tic-Tac-Toe - 6310409 v1.1',
           style: TextStyle(
             color: isDarkTheme
                 ? theme.colorScheme.inversePrimary
@@ -164,6 +165,7 @@ class _HomePageState extends State<HomePage> {
             tooltip: 'Restart Game',
             onPressed: () {
               setState(() {
+                round++;
                 _initialize();
               });
             },
@@ -184,6 +186,16 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Text(
+                        'Round: $round',
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: isDarkTheme ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       width: deviceWidth < deviceHeight
                           ? deviceWidth * 0.7
@@ -194,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisCount: Constants.size,
                         children: List.generate(
                           Constants.size * Constants.size,
-                          (index) => Container(
+                              (index) => Container(
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: isDarkTheme
@@ -204,20 +216,20 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: InkWell(
                               onTap: !isGameOver &&
-                                      symbolList[index].trim().isEmpty
+                                  symbolList[index].trim().isEmpty
                                   ? () {
-                                      setState(() {
-                                        currentIdx = index;
-                                      });
+                                setState(() {
+                                  currentIdx = index;
+                                });
 
-                                      symbolList[index] = _getSymbol();
+                                symbolList[index] = _getSymbol();
 
-                                      if (_isGameOver()) {
-                                        _showSnackBar(
-                                            context, symbolList[currentIdx]);
-                                        return;
-                                      }
-                                    }
+                                if (_isGameOver()) {
+                                  _showSnackBar(
+                                      context, symbolList[currentIdx]);
+                                  return;
+                                }
+                              }
                                   : null,
                               child: Center(
                                 child: symbolList[index] == ''
@@ -259,18 +271,16 @@ class _HomePageState extends State<HomePage> {
               alignment: Alignment.center,
               child: ConfettiWidget(
                 confettiController: _controllerCenter,
-                blastDirectionality: BlastDirectionality
-                    .explosive, // don't specify a direction, blast randomly
-                shouldLoop:
-                    true, // start again as soon as the animation is finished
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: true,
                 colors: const [
                   Colors.green,
                   Colors.blue,
                   Colors.pink,
                   Colors.orange,
                   Colors.purple
-                ], // manually specify the colors to be used
-                createParticlePath: drawStar, // define a custom shape/path.
+                ],
+                createParticlePath: drawStar,
               ),
             ),
           ],
@@ -327,7 +337,7 @@ class _HomePageState extends State<HomePage> {
         isGameOver = true;
         _controllerCenter.play();
         Future.delayed(const Duration(seconds: 3)).then(
-          (value) => _controllerCenter.stop(),
+              (value) => _controllerCenter.stop(),
         );
       });
       return true;
